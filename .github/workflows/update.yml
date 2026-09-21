@@ -1,0 +1,50 @@
+name: Update Bend
+
+on:
+  schedule:
+    - cron: "23 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-bend
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check update token
+        env:
+          TAP_UPDATE_TOKEN: ${{ secrets.TAP_UPDATE_TOKEN }}
+        run: |
+          if [ -z "$TAP_UPDATE_TOKEN" ]; then
+            echo 'Set TAP_UPDATE_TOKEN as described in README.md to enable update PRs.' >&2
+            exit 1
+          fi
+      - run: python3 -m unittest discover -s tests -v
+      - name: Update formula and verify release checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update_formula.py
+      - uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          token: ${{ secrets.TAP_UPDATE_TOKEN }}
+          branch: automation/update-bend
+          delete-branch: true
+          add-paths: Formula/bend.rb
+          commit-message: "chore: update Bend release"
+          title: "chore: update Bend release"
+          body: |
+            Updates Bend from the latest stable upstream release.
+
+            Both macOS archives were downloaded and their SHA-256 hashes checked
+            against GitHub release asset digests. This is not signature verification.
+
+            Review the upstream release notes and both macOS test jobs before merging.
+            This workflow does not enable automatic merging.
