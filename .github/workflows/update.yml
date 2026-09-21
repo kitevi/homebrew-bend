@@ -24,7 +24,7 @@ jobs:
           TAP_UPDATE_TOKEN: ${{ secrets.TAP_UPDATE_TOKEN }}
         run: |
           if [ -z "$TAP_UPDATE_TOKEN" ]; then
-            echo 'Set TAP_UPDATE_TOKEN as described in README.md to enable update PRs.' >&2
+            echo 'Set TAP_UPDATE_TOKEN as described in MAINTAINING.md to enable update PRs.' >&2
             exit 1
           fi
       - run: python3 -m unittest discover -s tests -v

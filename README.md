@@ -49,50 +49,8 @@ not execute downloaded code or merge PRs. Missing assets/digests, unexpected
 URLs, downgrades, and new major versions fail for manual review. Digests verify
 consistency with the GitHub release, not an independent publisher signature.
 
-### One-time maintainer setup
+## Contributing
 
-1. Push this repository to `kitevi/homebrew-bend`, using `main` as its default branch.
-2. Create a fine-grained GitHub personal access token restricted to this repository:
-   **Contents: read/write** and **Pull requests: read/write**. Use a short expiry
-   and rotate it before expiration.
-3. Add it under **Settings → Secrets and variables → Actions** as the repository
-   secret **`TAP_UPDATE_TOKEN`**. Never put the token in a file or commit.
-4. Run **Update Bend** manually once to check the configuration.
-5. Protect `main` and require both architecture-specific formula checks plus the
-   updater test job before merging. Check names appear after the first CI run.
-
-A separate token is intentional: PRs created with the built-in `GITHUB_TOKEN`
-generally do not trigger additional workflows. `TAP_UPDATE_TOKEN` lets the update
-PR trigger macOS CI normally. The updater refuses to run without it; there is no
-silent fallback that would leave update PRs untested. A GitHub App token can be
-used instead if you later want to avoid a personal token.
-
-CI installs the formula and tests the CLI, Base library, guide, and a small Bend
-program on Apple Silicon and Intel macOS runners, then runs Homebrew audit and
-style checks. Review upstream release notes and the PR diff before merging.
-Dependabot proposes updates to the SHA-pinned GitHub Actions weekly.
-
-## Local development
-
-```sh
-python3 -m unittest discover -s tests -v
-python3 scripts/update_formula.py --verify-current
-```
-
-The second command contacts GitHub, downloads both archives, and updates the
-formula if a newer stable Bend 2 release exists. It does not install Bend.
-`GH_TOKEN` is optional locally and raises the GitHub API rate limit.
-
-To test a local checkout as a tap (only if `kitevi/bend` is not already tapped):
-
-```sh
-brew tap --custom-remote kitevi/bend "$PWD"
-brew install kitevi/bend/bend
-brew test kitevi/bend/bend
-brew audit --strict kitevi/bend/bend
-brew style kitevi/bend/bend
-```
-
-Commit local changes before tapping: Homebrew clones the repository rather than
-reading uncommitted files from your working tree. For an existing installation,
-use `brew reinstall kitevi/bend/bend` to test an updated formula.
+Bug reports and PRs are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) for the
+local development setup and what CI checks. Maintainer-only operational docs
+(token setup, merging update PRs) live in [MAINTAINING.md](MAINTAINING.md).
