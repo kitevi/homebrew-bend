@@ -7,13 +7,13 @@ class Bend < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/bendlang/bend/releases/download/v2.0.24/bend-2.0.24-darwin-arm64.tar.gz"
-      sha256 "b17380ac7b8fce5c5c0250d23c9bb6d99cc9737bfca8a9e5428e051325926e1e"
+      url "https://github.com/bendlang/bend/releases/download/v2.0.25/bend-2.0.25-darwin-arm64.tar.gz"
+      sha256 "c5bb22ba029d5909da9c6db82aa037278a66d1cf8a5572f433879f7dcd866c31"
     end
 
     on_intel do
-      url "https://github.com/bendlang/bend/releases/download/v2.0.24/bend-2.0.24-darwin-x64.tar.gz"
-      sha256 "2ec76dd0ad295f4966cf46318ad87ff59a070195a7ede7560cafc564db232015"
+      url "https://github.com/bendlang/bend/releases/download/v2.0.25/bend-2.0.25-darwin-x64.tar.gz"
+      sha256 "78e70cda4068f83736649c760575f4382259d5817be96d2eb04b9d078d943af0"
     end
   end
 
