@@ -32,7 +32,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/update_formula.py
-      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+      - id: cpr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ secrets.TAP_UPDATE_TOKEN }}
           branch: automation/update-bend
@@ -46,5 +47,15 @@ jobs:
             Both macOS archives were downloaded and their SHA-256 hashes checked
             against GitHub release asset digests. This is not signature verification.
 
-            Review the upstream release notes and both macOS test jobs before merging.
-            This workflow does not enable automatic merging.
+            Auto-merge is requested after creation and waits for required CI checks.
+            If checks fail or repository rules block merging, this PR stays open.
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number != ''
+        env:
+          GH_TOKEN: ${{ secrets.TAP_UPDATE_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          if ! gh pr merge "$PR_NUMBER" --auto --squash; then
+            echo '::warning::Could not enable auto-merge; the update PR remains open for manual handling.'
+          fi
