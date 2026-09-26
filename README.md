@@ -39,8 +39,9 @@ export BEND_NO_TELEMETRY=1
 
 ## Automated release PRs
 
-`.github/workflows/update.yml` checks the latest stable upstream release daily
-at 08:23 UTC and can also be run manually from GitHub's Actions tab. GitHub may
+`.github/workflows/update.yml` checks the latest stable upstream release three times
+a day (00:23, 08:23, and 16:23 UTC) and can also be run manually from GitHub's
+Actions tab. GitHub may
 delay scheduled runs or disable schedules in inactive public repositories.
 
 The updater downloads both macOS archives, calculates SHA-256 hashes, checks
